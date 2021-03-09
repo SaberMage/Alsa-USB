@@ -13,11 +13,12 @@ Manual Installation
 - `(no prefix)` - File(s) simply need copied into a directory, overwriting any existing file(s) of the same name(s)
 
 **So, to install:**
-1. Run `sudo mkdir ~/Alsa-USB && cd ~/Alsa-USB && sudo wget -N -q --show-progress "https://raw.githubusercontent.com/SaberMage/Alsa-USB" && sudo chmod 777 -R ./`
+1. Download the install files by running: `sudo mkdir ~/au-install && cd ~/au-install && sudo git clone --depth 1 "https://github.com/SaberMage/Alsa-USB" && sudo rm -rf ./Alsa-USB/.git && sudo chmod 777 -R ./Alsa-USB && cd ./Alsa-USB`
 2. Visit the first directory under `/nexus`
 3. Perform the corresponding file operations
 4. Repeat steps `2` and `3` above for each of the remaining directories under `/nexus`, until all have been processed
-5. Reboot the device
+5. Run `cd ~ && sudo rm -rf ./au-install` to cleanup the install files
+6. Reboot the device
 
 After installing:
 ---
