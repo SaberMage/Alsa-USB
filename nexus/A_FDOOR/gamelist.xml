@@ -1,0 +1,8 @@
+	<game>
+		<path>./Alsa-USB-Menu.sh</path>
+		<name>Alsa-USB</name>
+		<desc>Control volume of USB audio devices + how they are handled.</desc>
+		<image>./icons/BGM.png</image>
+		<playcount>454</playcount>
+		<lastplayed>20210308T112603</lastplayed>
+	</game>

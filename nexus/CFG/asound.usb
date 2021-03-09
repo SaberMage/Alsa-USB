@@ -1,0 +1,33 @@
+# CARD DEFINITIONS
+pcm.!default {
+   type plug
+   slave.pcm "dmixer"
+}
+
+pcm.dmixer  {
+   type dmix
+   ipc_key 1024
+   slave {
+      pcm "hw:1,0"
+      period_time 0
+      period_size 1024
+      buffer_size 8192
+   }
+   bindings {
+      0 0
+      1 1
+   }
+}
+
+ctl.dmixer {
+   type hw
+   card USB_AUD
+}
+pcm.dsp {
+    type plug
+    slave.pcm "dmixer"
+}
+ctl.mixer {
+    type hw
+    card USB_AUD
+}

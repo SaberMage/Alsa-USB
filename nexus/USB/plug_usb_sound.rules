@@ -1,0 +1,2 @@
+ACTION=="add", DEVPATH=="*usb*/sound/card?", SUBSYSTEM=="sound", ATTR{id}="USB_AUD", RUN="/opt/alsa-usb/alsa-usb-on.sh"
+ACTION=="remove", DEVPATH=="*usb*/sound/card?", SUBSYSTEM=="sound", RUN="/opt/alsa-usb/alsa-usb-off.sh"

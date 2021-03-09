@@ -1,0 +1,31 @@
+#!/bin/bash
+
+AU_VARS=/opt/alsa-usb/cur-scard.sh
+BGM_PLAYER=/home/pi/RetroPie-BGM-Player/bgm_system.sh
+ALSASWITCH=/usr/local/sbin/alsaswitch
+
+usage() {
+	echo usage: `basename $0` `ls /etc/alsa/ -1 | sed -e 's:/etc/alsa/::g' -e 's/asound.//g'`
+}
+
+[[ -f $AU_VARS ]] && . $AU_VARS #Load in sound card vars
+if [ -n $1 ] && [ -e /etc/alsa/asound.$1 ]; then
+	#if [ $1 == "usb" ]; then
+		#Abort if switch to usb audio requested, but no device connected
+		if [ $1 == "usb" ] && [ $USB_EXIST == 0 ]; then
+			echo "No USB audio device!" && exit 1
+		fi
+		#Menu BGM messes with emulation speed when Genki is active, somehow
+	#fi
+	sudo pkill -f emulationstatio
+	$ALSASWITCH $1 &> /dev/null #Perform the config file linkages & update cur-scard.sh
+	#If game is running, wait until it stops to switch audio devices
+	while [ -e $GAME_DISABLE ]; do sleep 0.2; done
+	#if [ $1 == 'onboard' ]; then #Re-enable menu BGM in TTY1
+		[[ -f $BGM_PLAYER ]] && $BGM_PLAYER -i &> /dev/null &
+	#fi
+	sleep 1.5 #Starting up ES too soon results in ENDLESS ERRORS
+	sudo su pi -c 'openvt -fc 1 emulationstation - pi' #Make sure ES runs in TTY1
+else
+	usage
+fi

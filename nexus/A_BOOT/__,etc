@@ -1,0 +1,4 @@
+#Installer rules
+export REFERENCE="exit 0" #Line to search for
+export OFFSET="before" #Insert 'before' or 'after'
+export FALLBACK="append" #When ref not found: 'skip', 'overwrite', 'append', 'prepend'

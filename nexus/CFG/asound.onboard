@@ -1,0 +1,24 @@
+# CARD DEFINITIONS
+pcm.!default {
+   type plug
+   slave.pcm "dmixer"
+}
+
+pcm.dmixer  {
+   type hw
+   card ALSA
+}
+
+ctl.dmixer {
+   type hw
+   card ALSA
+}
+pcm.dsp {
+    type plug
+    slave.pcm "dmixer"
+}
+ctl.mixer {
+    type hw
+    card ALSA
+}
+

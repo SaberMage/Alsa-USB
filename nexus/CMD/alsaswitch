@@ -1,0 +1,16 @@
+#!/bin/bash
+
+AU_VARS=/opt/alsa-usb/cur-scard.sh
+
+usage() {
+	echo usage: `basename $0` `ls /etc/alsa/ -1 | sed -e 's:/etc/alsa/::g' -e 's/asound.//g'`
+}
+
+[[ -f $AU_VARS ]] && . $AU_VARS #Load in sound card vars
+if [ -n $1 ] && [ -e /etc/alsa/asound.$1 ]; then
+	sudo ln -sf /etc/alsa/asound.$1 /etc/asound.conf
+	sudo ln -sf /etc/alsa/asound.$1 /home/pi/.asoundrc
+	SOUND_CARD=$1 && CARD_EVENT=0 && . $WRITE_VARS
+else
+	usage
+fi

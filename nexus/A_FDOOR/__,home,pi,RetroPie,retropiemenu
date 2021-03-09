@@ -1,0 +1,4 @@
+#Installer rules
+export REFERENCE="</gameList>" #Line to search for
+export OFFSET="before" #Insert 'before' or 'after'
+export FALLBACK="skip" #When ref not found: 'skip', 'overwrite', 'append', 'prepend'

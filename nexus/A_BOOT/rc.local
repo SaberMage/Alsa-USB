@@ -1,0 +1,7 @@
+
+#Load in + reset sound card vars
+. /opt/alsa-usb/cur-scard.sh && USB_EXIST=0 && SOUND_CARD=onboard && CARD_EVENT=1 && . $WRITE_SCARD
+#Ensure game disable lock is off
+sudo rm /opt/alsa-usb/game-on.disable
+#Start the USB audio auto-switch manager
+$(sleep 1 && sudo /opt/alsa-usb/alsa-usb-mgr.sh &> /dev/null &)
