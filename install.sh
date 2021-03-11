@@ -34,7 +34,7 @@ CMD="/user/local/sbin"
 FDOOR="/home/pi/RetroPie/retropiemenu"
 MENU="/home/pi/Alsa-USB"
 OPS="/opt/alsa-usb"
-SYS="/etc/modeprobe.d"
+SYS="/etc/modprobe.d"
 USB="/etc/udev/rules.d"
 ZS_CFGG="/etc"
 ZS_CFGU="/home/pi"
@@ -207,7 +207,7 @@ function installfolder() {
       ;;
     *) #Copy files
       #Copies all files recursively (incl. subdirs) to $fulltarget/
-      sudo rm -f "__,*" #Remove the info file; not used for these folders
+      sudo rm -f __* #Remove the info file; not used for these folders
       echo -e " ${LGREEN}> Copying files to ${ORANGE}$fulltarget"
       sudo mkdir -m 777 -p $fulltarget #Ensure target directory exists
       sudo cp -rf -t $fulltarget ./*
@@ -232,7 +232,7 @@ sleep $SLEEPTIME
 	echo -e " ${LRED}-${NC}${WHITE} To finish, we need to reboot.${NC}${ORANGE}\n"
 	read -n 1 -s -r -p " Press any key to Restart."
 	echo -e "${NC}\n"
-	sudo rm -rfd $INSTALL_PATH && sudo rm -f $SCRIPTPATH #&& sudo reboot
+	sudo rm -rfd $INSTALLPATH && sudo rm -f $SCRIPTPATH #&& sudo reboot
 # fi
 ########################
 ########################
