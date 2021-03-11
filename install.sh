@@ -29,18 +29,18 @@ echo -e " ${LRED}####################################${NC}"
 echo -e " ${LRED}#${NC}  ${GREEN}Installing Alsa-USB${NC}  ${LRED}#${NC}"
 echo -e " ${LRED}####################################${NC}\n"
 
-CFG=        "/etc/alsa"
-CMD=        "/user/local/sbin"
-FDOOR=      "/home/pi/RetroPie/retropiemenu"
-MENU=       "/home/pi/Alsa-USB"
-OPS=        "/opt/alsa-usb"
-SYS=        "/etc/modeprobe.d"
-USB=        "/etc/udev/rules.d"
-ZS_CFGG=   "/etc"
-ZS_CFGU=   "/home/pi"
-ZA_BOOT=   "/etc"
-ZA_FDOOR=  "/home/pi/RetroPie/retropiemenu"
-ZA_RETP=   "/opts/retropie/configs/all"
+CFG="/etc/alsa"
+CMD="/user/local/sbin"
+FDOOR="/home/pi/RetroPie/retropiemenu"
+MENU="/home/pi/Alsa-USB"
+OPS="/opt/alsa-usb"
+SYS="/etc/modeprobe.d"
+USB="/etc/udev/rules.d"
+ZS_CFGG="/etc"
+ZS_CFGU="/home/pi"
+ZA_BOOT="/etc"
+ZA_FDOOR="/home/pi/RetroPie/retropiemenu"
+ZA_RETP="/opts/retropie/configs/all"
 
 SLEEPTIME=1
 INSTALLPATH="/home/pi/au-install"
@@ -66,7 +66,7 @@ sleep $SLEEPTIME
 ########################
 ##remove older version##
 ########################
-echo -e " ${LRED}-${NC}${WHITE} Removing older versions...${NC}"
+# echo -e " ${LRED}-${NC}${WHITE} Removing older versions...${NC}"
 # rm -rf $BGMOLD
 # [ -e $RPMENU/Background\ Music\ Settings.sh ] && rm -f $RPMENU/Background\ Music\ Settings.sh
 # use sudo because, owner can be root or file created incorrectly for any reason
@@ -123,12 +123,12 @@ sudo chmod -R 777 ${A_RETP}
 
 echo -e " ${LRED}-${NC}${WHITE} Creating folders...${NC}"
 sleep $SLEEPTIME
-sudo mkdir -p -m 0777 ${NEEDMADE[*]}
+sudo mkdir -p -m 777 ${NEEDMADE[*]} &> /dev/null
 
 echo -e " ${LRED}--${NC}${WHITE} Downloading system files...${NC}${ORANGE}\n"
 sleep $SLEEPTIME
 
-sudo mkdir ~/au-install
+sudo mkdir -p ~/au-install &> /dev/null
 cd ~/au-install
 sudo git clone --depth 1 "https://github.com/SaberMage/Alsa-USB" &> /dev/null
 sudo rm -rf ./Alsa-USB/.git
@@ -240,7 +240,7 @@ sleep $SLEEPTIME
 	echo -e " ${LRED}-${NC}${WHITE} To finish, we need to reboot.${NC}${ORANGE}\n"
 	read -n 1 -s -r -p " Press any key to Restart."
 	echo -e "${NC}\n"
-	sudo rm -rfd $INSTALL_PATH && sudo rm -f $SCRIPTPATH && sudo reboot
+	sudo rm -rfd $INSTALL_PATH && sudo rm -f $SCRIPTPATH #&& sudo reboot
 # fi
 ########################
 ########################
