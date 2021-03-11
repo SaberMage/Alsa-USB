@@ -118,8 +118,8 @@ sleep $SLEEPTIME
 
 echo -e " ${LRED}-${NC}${WHITE} Change some permissions...${NC}"
 sleep $SLEEPTIME
-# sudo chmod 777 ${A_RETP}/runcommand-onstart.sh ${A_RETP}/runcommand-onend.sh ${A_RETP}/autostart.sh >/dev/null 2>&1
-sudo chmod -R 777 ${A_RETP}
+# sudo chmod 777 ${ZA_RETP}/runcommand-onstart.sh ${ZA_RETP}/runcommand-onend.sh ${ZA_RETP}/autostart.sh >/dev/null 2>&1
+sudo chmod -R 777 ${ZA_RETP}
 
 echo -e " ${LRED}-${NC}${WHITE} Creating folders...${NC}"
 sleep $SLEEPTIME
@@ -163,7 +163,7 @@ function installfolder() {
         #Derive output filename by parsing the nexus filename
         local dest="${fulltarget}/$(echo "$fname" | sed 's/^.*,,//')"
         echo -e " ${LGREEN}> Symlinking ${BLUE}$src ${LGREEN}to ${ORANGE}$dest"
-        sudo mkdir -m 0777 -p $fulltarget #Ensure target directory exists
+        sudo mkdir -m 777 -p $fulltarget #Ensure target directory exists
         sudo cp -sf $src $dest
       done
       # readarray -td '?' a <<<$(awk '{ gsub(/,,/,"?"); print; }' <<<"$fname") #Was fun but we don't need it!
@@ -176,6 +176,7 @@ function installfolder() {
       [ $OFFSET == 'before' ] && sedcmd='i' || sedcmd='a'
       local files=(*) #Create array of remaining files
       for fname in ${files[@]}; do
+        echo -e " ${RED}###APPEND: $fname from $dir" #DEBUG
         local fpath="$fulltarget/$fname"
         echo -e " ${LGREEN}> Modifying files in ${ORANGE}$fulltarget"
         sudo mkdir -m 777 -p $fulltarget #Ensure target directory exists
@@ -215,15 +216,6 @@ function installfolder() {
 }
 #Iterate over folders in ./nexus, perform the proper installation(s) for each
 for dir in "${NEXUSDIRS[@]}"; do installfolder $dir; echo i++ &> /dev/null; done
-
-sleep $SLEEPTIME
-echo -e " ${LRED}--${NC}${WHITE} Writing on autostart script...${NC}"
-sleep $SLEEPTIME
-#use sudo because, owner can be root or file created incorrectly for any reason
-sudo chmod 777 autostart.sh
-sed -i "/bgm_system.sh/d" autostart.sh
-sed -i "1 i bash \$HOME/RetroPie-BGM-Player/bgm_system.sh -i --autostart" autostart.sh
-sleep $SLEEPTIME
 
 echo -e "\n ${LRED}[${NC}${LGREEN} Installation Finished ${NC}${LRED}]${NC}\n"
 sleep $SLEEPTIME
