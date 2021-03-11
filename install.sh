@@ -6,7 +6,7 @@
 #####################################################################
 #Script Name  : install.sh
 #Date          : 20210310	(YYYYMMDD)
-#Description  : The installation script.
+#Description  : The installation script. Heavily customized from Naprosnia's (barring style)
 #Usage        : wget -N https://raw.githubusercontent.com/SaberMage/Alsa-USB/main/install.sh
 #              : chmod +x install.sh
 #              : bash install.sh
@@ -46,7 +46,7 @@ SLEEPTIME=1
 INSTALLPATH="/home/pi/au-install"
 NEXUSPATH="$INSTALLPATH/Alsa-USB/nexus"
 SCRIPTPATH=$(realpath $0)
-copyprefix="/home/pi/test" #DEBUG - Extracted files will use this as their root dir, for testing
+# copyprefix="/home/pi/test" #DEBUG - Extracted files will use this as their root dir, for testing
 
 NEEDMADE=($INSTALLPATH $MENU $OPS)
 declare -a NEXUSDIRS #Will become an array of all directories in the nexus
@@ -176,14 +176,13 @@ function installfolder() {
       [ $OFFSET == 'before' ] && sedcmd='e cat' || sedcmd='r'
       local files=(*) #Create array of remaining files
       for fname in ${files[@]}; do
-        echo -e " ${RED}###APPEND: $fname from $dir${NC}" #DEBUG
+        # echo -e " ${RED}###APPEND: $fname from $dir${NC}" #DEBUG
         local fpath="$fulltarget/$fname"
-        echo -e " ${LGREEN}> Modifying files in ${ORANGE}$fulltarget${NC}"
+        echo -e " ${LGREEN}> Modifying file(s) in ${ORANGE}$fulltarget${NC}"
         sudo mkdir -m 777 -p $fulltarget #Ensure target directory exists
         sudo chmod 777 $fulltarget
         [ ! -e $fpath ] && touch $fpath #Ensure target file exists
         if [ ! -z "$(sed -n "\\|$REFERENCE|p" $fpath)" ]; then #Reference line is matched
-          #local append=$(cat $fname)
           sudo sed -i'.au.bak' -e "\\|$REFERENCE|$sedcmd $fname" "$fpath"
         else #Ref string unmatched; go with the fallback directive
           case $FALLBACK in
@@ -212,7 +211,7 @@ function installfolder() {
     *) #Copy files
       #Copies all files recursively (incl. subdirs) to $fulltarget/
       sudo rm -f __* #Remove the info file; not used for these folders
-      echo -e " ${LGREEN}> Copying files to ${ORANGE}$fulltarget${NC}"
+      echo -e " ${LGREEN}> Copying file(s) to ${ORANGE}$fulltarget${NC}"
       sudo mkdir -m 777 -p $fulltarget #Ensure target directory exists
       sudo cp -rf -t $fulltarget ./*
       ;;
@@ -236,7 +235,7 @@ sleep $SLEEPTIME
 	echo -e " ${LRED}-${NC}${WHITE} To finish, we need to reboot.${NC}${ORANGE}\n"
 	read -n 1 -s -r -p " Press any key to Restart."
 	echo -e "${NC}\n"
-	sudo rm -rfd $INSTALLPATH && sudo rm -f $SCRIPTPATH #&& sudo reboot
+	(sudo rm -rfd "$INSTALLPATH"; sudo rm -f "$SCRIPTPATH"; sudo reboot)
 # fi
 ########################
 ########################
