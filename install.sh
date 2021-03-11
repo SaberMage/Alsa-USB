@@ -162,7 +162,7 @@ function installfolder() {
         local src=$(echo "$fname" | sed 's/,,.*$//' | sed 's/,/\//g')
         #Derive output filename by parsing the nexus filename
         local dest="${fulltarget}/$(echo "$fname" | sed 's/^.*,,//')"
-        echo -e " ${LGREEN}> Symlinking ${BLUE}$src ${LGREEN}to ${ORANGE}$dest"
+        echo -e " ${LGREEN}> Symlinking ${BLUE}$src ${LGREEN}to ${ORANGE}$dest${NC}"
         sudo mkdir -m 777 -p $fulltarget #Ensure target directory exists
         sudo cp -sf $src $dest
       done
@@ -176,9 +176,9 @@ function installfolder() {
       [ $OFFSET == 'before' ] && sedcmd='i' || sedcmd='a'
       local files=(*) #Create array of remaining files
       for fname in ${files[@]}; do
-        echo -e " ${RED}###APPEND: $fname from $dir" #DEBUG
+        echo -e " ${RED}###APPEND: $fname from $dir${NC}" #DEBUG
         local fpath="$fulltarget/$fname"
-        echo -e " ${LGREEN}> Modifying files in ${ORANGE}$fulltarget"
+        echo -e " ${LGREEN}> Modifying files in ${ORANGE}$fulltarget${NC}"
         sudo mkdir -m 777 -p $fulltarget #Ensure target directory exists
         sudo chmod 777 $fulltarget
         [ ! -e $fpath ] && touch $fpath #Ensure target file exists
@@ -198,7 +198,7 @@ function installfolder() {
               "$append" > "$fpath"
               ;;
             skip)
-              echo -e " ${LGREEN}> No match for ${BLUE}\$REFERENCE ${LGREEN}in ${ORANGE}${fulltarget}${LGREEN}; skipped write!"
+              echo -e " ${LGREEN}> No match for ${BLUE}\$REFERENCE ${LGREEN}in ${ORANGE}${fulltarget}${LGREEN}; skipped write!${NC}"
               sleep 3
               ;;
           esac
@@ -208,7 +208,7 @@ function installfolder() {
     *) #Copy files
       #Copies all files recursively (incl. subdirs) to $fulltarget/
       sudo rm -f __* #Remove the info file; not used for these folders
-      echo -e " ${LGREEN}> Copying files to ${ORANGE}$fulltarget"
+      echo -e " ${LGREEN}> Copying files to ${ORANGE}$fulltarget${NC}"
       sudo mkdir -m 777 -p $fulltarget #Ensure target directory exists
       sudo cp -rf -t $fulltarget ./*
       ;;
