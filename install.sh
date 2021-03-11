@@ -184,14 +184,14 @@ function installfolder() {
         [ ! -e $fpath ] && touch $fpath #Ensure target file exists
         if [ ! -z "$(sed -n "\|$REFERENCE|p" $fpath)" ]; then #Reference line is matched
           local append=$(cat $fname)
-          sudo sed -i'.au.bak' "\|$REFERENCE|$sedcmd $append" "$fpath"
+          sudo sed -i'.au.bak' -e "\|$REFERENCE|$sedcmd $append" "$fpath"
         else #Ref string unmatched; go with the fallback directive
           case $FALLBACK in
             prepend)
-              sudo sed -i'.au.bak' "\|.*|i $append" "$fpath" #| as delimiter because $append often contains /
+              sudo sed -i'.au.bak' -e "\|.*|i $append" "$fpath" #| as delimiter because $append often contains /
               ;;
             append)
-              sudo sed -i'.au.bak' "\|.*|a $append" "$fpath"
+              sudo sed -i'.au.bak' -e "\|.*|a $append" "$fpath"
               ;;
             overwrite)
               sudo cp "$fpath" "$fpath.au.bak"
