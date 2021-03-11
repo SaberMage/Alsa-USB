@@ -1,7 +1,7 @@
 #!/bin/bash
 #####################################################################
 #Project		:	Alsa-USB
-#Git			:	https://github.com/
+#Git			:	https://github.com/SaberMage/Alsa-USB
 #####################################################################
 #Script Name	:	usb.f
 #Date			:	20210307	(YYYYMMDD)

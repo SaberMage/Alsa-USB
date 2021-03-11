@@ -1,7 +1,7 @@
 #!/bin/bash 
 #####################################################################
 #Project		:	Alsa-USB
-#Git			:	https://github.com/
+#Git			:	https://github.com/SaberMage/Alsa-USB
 #####################################################################
 #Script Name	:	au-menu-top.sh
 #Date			:	20210306	(YYYYMMDD)
