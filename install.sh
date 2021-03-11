@@ -30,7 +30,7 @@ echo -e " ${LRED}#${NC}  ${GREEN}Installing Alsa-USB${NC}  ${LRED}#${NC}"
 echo -e " ${LRED}####################################${NC}\n"
 
 CFG="/etc/alsa"
-CMD="/user/local/sbin"
+CMD="/usr/local/sbin"
 FDOOR="/home/pi/RetroPie/retropiemenu"
 MENU="/home/pi/Alsa-USB"
 OPS="/opt/alsa-usb"
@@ -40,7 +40,7 @@ ZS_CFGG="/etc"
 ZS_CFGU="/home/pi"
 ZA_BOOT="/etc"
 ZA_FDOOR="/home/pi/RetroPie/retropiemenu"
-ZA_RETP="/opts/retropie/configs/all"
+ZA_RETP="/opt/retropie/configs/all"
 
 SLEEPTIME=1
 INSTALLPATH="/home/pi/au-install"
@@ -182,16 +182,16 @@ function installfolder() {
         sudo mkdir -m 777 -p $fulltarget #Ensure target directory exists
         sudo chmod 777 $fulltarget
         [ ! -e $fpath ] && touch $fpath #Ensure target file exists
-        if [ ! -z "$(sed -n "/$REFERENCE/p" $fpath)" ]; then #Reference line is matched
+        if [ ! -z "$(sed -n "\|$REFERENCE|p" $fpath)" ]; then #Reference line is matched
           local append=$(cat $fname)
-          sudo sed -i'.au.bak' "/$REFERENCE/$sedcmd $append" "$fpath"
+          sudo sed -i'.au.bak' "\|$REFERENCE|$sedcmd $append" "$fpath"
         else #Ref string unmatched; go with the fallback directive
           case $FALLBACK in
             prepend)
-              sudo sed -i'.au.bak' "/.*/i $append" "$fpath"
+              sudo sed -i'.au.bak' "\|.*|i $append" "$fpath" #| as delimiter because $append often contains /
               ;;
             append)
-              sudo sed -i'.au.bak' "/.*/a $append" "$fpath"
+              sudo sed -i'.au.bak' "\|.*|a $append" "$fpath"
               ;;
             overwrite)
               sudo cp "$fpath" "$fpath.au.bak"
