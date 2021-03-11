@@ -36,18 +36,23 @@ MENU=       "/home/pi/Alsa-USB"
 OPS=        "/opt/alsa-usb"
 SYS=        "/etc/modeprobe.d"
 USB=        "/etc/udev/rules.d"
-S_CFGG=    "/etc"
-S_CFGU=    "/home/pi"
-A_BOOT=    "/etc"
-A_FDOOR=   "/home/pi/RetroPie/retropiemenu"
-A_RETP=    "/opts/retropie/configs/all"
+ZS_CFGG=   "/etc"
+ZS_CFGU=   "/home/pi"
+ZA_BOOT=   "/etc"
+ZA_FDOOR=  "/home/pi/RetroPie/retropiemenu"
+ZA_RETP=   "/opts/retropie/configs/all"
 
+SLEEPTIME=1
 INSTALLPATH="/home/pi/au-install"
+NEXUSPATH="$INSTALLPATH/Alsa-USB/nexus"
 SCRIPTPATH=$(realpath $0)
+
+NEEDMADE=($INSTALLPATH $MENU $OPS)
+declare -a NEXUSDIRS #Will become an array of all directories in the nexus
 
 
 echo -e " ${LRED}[${NC}${LGREEN} Preparing Installation ${NC}${LRED}]${NC}"
-sleep 1
+sleep $SLEEPTIME
 
 ########################
 ##   Kill Processes   ##
@@ -74,10 +79,10 @@ echo -e " ${LRED}-${NC}${WHITE} Removing older versions...${NC}"
 ##Packages and Dependencies##
 #############################
 # echo -e "\n ${LRED}[${NC} ${LGREEN}Packages and Dependencies Installation${NC} ${LRED}]${NC}"
-# sleep 1
+# sleep $SLEEPTIME
 
 # echo -e " ${LRED}-${NC}${WHITE} Checking packages and dependencies...${NC}"
-# sleep 1
+# sleep $SLEEPTIME
 
 # packages=("unzip" "mpg123" "audacious" "audacious-plugins")
 
@@ -93,13 +98,13 @@ echo -e " ${LRED}-${NC}${WHITE} Removing older versions...${NC}"
 # if [ ${#installpackages[@]} -gt 0 ]; then
 #
 # 	echo -e " ${LRED}---${NC}${WHITE} Installing missing packages and dependencies...${NC}${ORANGE}\n"
-# 	sleep 1
+# 	sleep $SLEEPTIME
 #
 # 	sudo apt-get update; sudo apt-get install -y ${installpackages[@]}
 #
 # fi
 # echo -e "\n ${NC}${LRED}--${NC}${GREEN} All packages and dependencies are installed.${NC}\n"
-# sleep 1
+# sleep $SLEEPTIME
 ########################
 ########################
 
@@ -108,19 +113,19 @@ echo -e " ${LRED}-${NC}${WHITE} Removing older versions...${NC}"
 ########################
 
 echo -e " ${LRED}[${NC}${LGREEN} Installing Alsa-USB v. 1.0 ${NC}${LRED}]${NC}"
-sleep 1
+sleep $SLEEPTIME
 
 echo -e " ${LRED}-${NC}${WHITE} Change some permissions...${NC}"
-sleep 1
+sleep $SLEEPTIME
 # sudo chmod 777 ${A_RETP}/runcommand-onstart.sh ${A_RETP}/runcommand-onend.sh ${A_RETP}/autostart.sh >/dev/null 2>&1
 sudo chmod -R 777 ${A_RETP}
 
 echo -e " ${LRED}-${NC}${WHITE} Creating folders...${NC}"
-sleep 1
-mkdir -p -m 0777 ${MENU} ${OPS}
+sleep $SLEEPTIME
+sudo mkdir -p -m 0777 ${NEEDMADE[*]}
 
 echo -e " ${LRED}--${NC}${WHITE} Downloading system files...${NC}${ORANGE}\n"
-sleep 1
+sleep $SLEEPTIME
 
 sudo mkdir ~/au-install
 cd ~/au-install
@@ -128,39 +133,66 @@ sudo git clone --depth 1 "https://github.com/SaberMage/Alsa-USB" &> /dev/null
 sudo rm -rf ./Alsa-USB/.git
 
 echo -e "\n ${NC}${LRED}--${NC}${WHITE} Applying permissions...${NC}"
-sleep 1
+sleep $SLEEPTIME
 sudo chmod 777 -R ./Alsa-USB
-cd ./Alsa-USB
+cd ./Alsa-USB/nexus
+#Get & store all /nexus subdirectory names
+i=0; for d in */; do NEXUSDIRS[i++]="${d%/}"; done
 
 echo -e " ${LRED}--${NC}${WHITE} Distributing and modifying core files...${NC}"
-sleep 1
-function installFolder() {
-  local folder=$1
-  local prefix=${folder:0:2} #First two chars of folder name
-  local target=$(eval echo '$'$folder) #Destination folder for files/actions
+sleep $SLEEPTIME
+function installfolder() {
+  local dir=$1
+  local prefix=${dir:1:2} #Chars 2 and 3 of folder name
+  local target=$(eval echo '$'$dir) #Destination folder for files/actions
+  local copyprefix="/home/pi/test" #DEBUG
+  local fulltarget="${copyprefix}$target"
+
+  cd "$NEXUSPATH/$dir"
 
   case $prefix in
     S_) #Symlink
+      #Note: Does not permit target subdirectories. Each unique target dir will need its own nexus dir
+      #Filename like ",home,pi,source-dir,source.txt,,linked.txt" translates to:
+      #Symlink "/home/pi/source-dir/source.txt" to "$fulltarget/linked.txt"
+      sudo rm -f __* #Remove the info file; not used for these folders
+      local files=(*) #Create array of remaining files
+      for fname in ${files[@]}; do
+        #Derive source filepath by parsing the nexus filename
+        local src=$(echo "$fname" | sed 's/,,.*$//' | sed 's/,/\//g')
+        #Derive output filename by parsing the nexus filename
+        local dest="${fulltarget}/$(echo "$fname" | sed 's/^.*,,//')"
+        echo -e " ${LGREEN}> Symlinking ${BLUE}$src ${LGREEN}to ${ORANGE}$dest"
+        sudo mkdir -m 0777 -p $fulltarget #Ensure target directory exists
+        sudo cp -sf $src $dest
+      done
+      # readarray -td '?' a <<<$(awk '{ gsub(/,,/,"?"); print; }' <<<"$fname") #Was fun but we don't need it!
       ;;
     A_) #Append/insert
       ;;
     *) #Copy files
+      #Copies all files recursively (incl. subdirs) to $fulltarget/
+      sudo rm -f "__,*" #Remove the info file; not used for these folders
+      echo -e " ${LGREEN}> Copying files to ${ORANGE}$fulltarget"
+      sudo mkdir -m 0777 -p $fulltarget #Ensure target directory exists
+      sudo cp -rf -t $fulltarget ./*
       ;;
   esac
 }
-#Iterate over folders in ./nexus
+#Iterate over folders in ./nexus, perform the proper installation(s) for each
+for dir in "${NEXUSDIRS[@]}"; do installfolder $dir; echo i++ &> /dev/null; done
 
-sleep 1
+sleep $SLEEPTIME
 echo -e " ${LRED}--${NC}${WHITE} Writing on autostart script...${NC}"
-sleep 1
+sleep $SLEEPTIME
 #use sudo because, owner can be root or file created incorrectly for any reason
 sudo chmod 777 autostart.sh
 sed -i "/bgm_system.sh/d" autostart.sh
 sed -i "1 i bash \$HOME/RetroPie-BGM-Player/bgm_system.sh -i --autostart" autostart.sh
-sleep 1
+sleep $SLEEPTIME
 
 echo -e "\n ${LRED}[${NC}${LGREEN} Installation Finished ${NC}${LRED}]${NC}\n"
-sleep 1
+sleep $SLEEPTIME
 ########################
 ########################
 
@@ -174,7 +206,7 @@ sleep 1
 	echo -e " ${LRED}-${NC}${WHITE} To finish, we need to reboot.${NC}${ORANGE}\n"
 	read -n 1 -s -r -p " Press any key to Restart."
 	echo -e "${NC}\n"
-	rm -rfd $INSTALL_PATH && rm -f $SCRIPTPATH && sudo reboot
+	sudo rm -rfd $INSTALL_PATH && sudo rm -f $SCRIPTPATH && sudo reboot
 # fi
 ########################
 ########################
