@@ -19,6 +19,11 @@ After installing:
 
 **Note**: **Alsa-USB** is compatible with Naprosnia's [RetroPie BGM Player](https://github.com/Naprosnia/RetroPie_BGM_Player)
 
+![Screenshot: Retropie Configs Menu Icon](/screenshot/alsa-menu-item.png?raw=true "Alsa-USB in Retropie's Configs Menu")
+![Screenshot: Alsa-USB Main Menu](/screenshot/alsa-main-menu.png?raw=true "Alsa-USB Main Menu")
+![Screenshot: Alsa-USB Volume Options](/screenshot/alsa-volume-menu.png?raw=true "USB Volume Control")
+![Screenshot: Alsa-USB Auto-Switch Menu](/screenshot/alsa-switch-menu.png?raw=true "Toggle the Auto-Switch Feature On/Off")
+
 ---
 
 Manual Installation
