@@ -188,14 +188,20 @@ function installfolder() {
         else #Ref string unmatched; go with the fallback directive
           case $FALLBACK in
             prepend)
-              sudo sed -i'.au.bak' -e "\|.*|i $append" "$fpath" #| as delimiter because $append often contains /
+              if [ -z "$(cat $fpath)" ]; then echo "$append" > "$fpath" #File empty; simply output to it
+              else
+                sudo sed -i'.au.bak' -e "\|.*|i $append" "$fpath" #| as delimiter because $append often contains /
+              fi
               ;;
             append)
-              sudo sed -i'.au.bak' -e "\|.*|a $append" "$fpath"
+              if [ -z "$(cat $fpath)" ]; then echo "$append" > "$fpath" #File empty; simply output to it
+              else
+                sudo sed -i'.au.bak' -e "\|.*|i $append" "$fpath" #| as delimiter because $append often contains /
+              fi
               ;;
             overwrite)
               sudo cp "$fpath" "$fpath.au.bak"
-              "$append" > "$fpath"
+              echo "$append" > "$fpath"
               ;;
             skip)
               echo -e " ${LGREEN}> No match for ${BLUE}\$REFERENCE ${LGREEN}in ${ORANGE}${fulltarget}${LGREEN}; skipped write!${NC}"
