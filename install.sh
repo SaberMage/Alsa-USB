@@ -46,6 +46,7 @@ SLEEPTIME=1
 INSTALLPATH="/home/pi/au-install"
 NEXUSPATH="$INSTALLPATH/Alsa-USB/nexus"
 SCRIPTPATH=$(realpath $0)
+copyprefix="/home/pi/test" #DEBUG - Extracted files will use this as their root dir, for testing
 
 NEEDMADE=($INSTALLPATH $MENU $OPS)
 declare -a NEXUSDIRS #Will become an array of all directories in the nexus
@@ -145,7 +146,6 @@ function installfolder() {
   local dir=$1
   local prefix=${dir:1:2} #Chars 2 and 3 of folder name
   local target=$(eval echo '$'$dir) #Destination folder for files/actions
-  local copyprefix="/home/pi/test" #DEBUG
   local fulltarget="${copyprefix}$target"
 
   cd "$NEXUSPATH/$dir"
@@ -169,12 +169,46 @@ function installfolder() {
       # readarray -td '?' a <<<$(awk '{ gsub(/,,/,"?"); print; }' <<<"$fname") #Was fun but we don't need it!
       ;;
     A_) #Append/insert
+      . __* #Source the installer rules for performing the append/insert; includes REFERENCE, OFFSET, FALLBACK
+      sudo rm -f __*
+      #Determine command for sed
+      local sedcmd
+      [ $OFFSET == 'before' ] && sedcmd='i' || sedcmd='a'
+      local files=(*) #Create array of remaining files
+      for fname in ${files[@]}; do
+        local fpath="$fulltarget/$fname"
+        echo -e " ${LGREEN}> Modifying files in ${ORANGE}$fulltarget"
+        sudo mkdir -m 777 -p $fulltarget #Ensure target directory exists
+        sudo chmod 777 $fulltarget
+        [ ! -e $fpath ] && touch $fpath #Ensure target file exists
+        if [ ! -z "$(sed -n "/$REFERENCE/p" $fpath)" ]; then #Reference line is matched
+          local append=$(cat $fname)
+          sudo sed -i'.au.bak' "/$REFERENCE/$sedcmd $append" "$fpath"
+        else #Ref string unmatched; go with the fallback directive
+          case $FALLBACK in
+            prepend)
+              sudo sed -i'.au.bak' "/.*/i $append" "$fpath"
+              ;;
+            append)
+              sudo sed -i'.au.bak' "/.*/a $append" "$fpath"
+              ;;
+            overwrite)
+              sudo cp "$fpath" "$fpath.au.bak"
+              "$append" > "$fpath"
+              ;;
+            skip)
+              echo -e " ${LGREEN}> No match for ${BLUE}\$REFERENCE ${LGREEN}in ${ORANGE}${fulltarget}${LGREEN}; skipped write!"
+              sleep 3
+              ;;
+          esac
+        fi
+      done
       ;;
     *) #Copy files
       #Copies all files recursively (incl. subdirs) to $fulltarget/
       sudo rm -f "__,*" #Remove the info file; not used for these folders
       echo -e " ${LGREEN}> Copying files to ${ORANGE}$fulltarget"
-      sudo mkdir -m 0777 -p $fulltarget #Ensure target directory exists
+      sudo mkdir -m 777 -p $fulltarget #Ensure target directory exists
       sudo cp -rf -t $fulltarget ./*
       ;;
   esac
