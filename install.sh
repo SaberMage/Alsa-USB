@@ -182,21 +182,21 @@ function installfolder() {
         sudo mkdir -m 777 -p $fulltarget #Ensure target directory exists
         sudo chmod 777 $fulltarget
         [ ! -e $fpath ] && touch $fpath #Ensure target file exists
-        if [ ! -z "$(sed -n "\|$REFERENCE|p" $fpath)" ]; then #Reference line is matched
+        if [ ! -z "$(sed -n "\\|$REFERENCE|p" $fpath)" ]; then #Reference line is matched
           local append=$(cat $fname)
-          sudo sed -i'.au.bak' -e "\|$REFERENCE|$sedcmd $append" "$fpath"
+          sudo sed -i'.au.bak' -e "\\|$REFERENCE|$sedcmd $append" "$fpath"
         else #Ref string unmatched; go with the fallback directive
           case $FALLBACK in
             prepend)
               if [ -z "$(cat $fpath)" ]; then echo "$append" > "$fpath" #File empty; simply output to it
               else
-                sudo sed -i'.au.bak' -e "\|.*|i $append" "$fpath" #| as delimiter because $append often contains /
+                sudo sed -i'.au.bak' -e "\\|.*|i $append" "$fpath" #| as delimiter because $append often contains /
               fi
               ;;
             append)
               if [ -z "$(cat $fpath)" ]; then echo "$append" > "$fpath" #File empty; simply output to it
               else
-                sudo sed -i'.au.bak' -e "\|.*|i $append" "$fpath" #| as delimiter because $append often contains /
+                sudo sed -i'.au.bak' -e "\\|.*|i $append" "$fpath" #| as delimiter because $append often contains /
               fi
               ;;
             overwrite)
