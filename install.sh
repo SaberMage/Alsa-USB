@@ -173,7 +173,7 @@ function installfolder() {
       sudo rm -f __*
       #Determine command for sed
       local sedcmd
-      [ $OFFSET == 'before' ] && sedcmd='i' || sedcmd='a'
+      [ $OFFSET == 'before' ] && sedcmd='e cat' || sedcmd='r'
       local files=(*) #Create array of remaining files
       for fname in ${files[@]}; do
         echo -e " ${RED}###APPEND: $fname from $dir${NC}" #DEBUG
@@ -183,21 +183,19 @@ function installfolder() {
         sudo chmod 777 $fulltarget
         [ ! -e $fpath ] && touch $fpath #Ensure target file exists
         if [ ! -z "$(sed -n "\\|$REFERENCE|p" $fpath)" ]; then #Reference line is matched
-          local append=$(cat $fname)
-          sudo sed -i'.au.bak' -e "\\|$REFERENCE|$sedcmd $append" "$fpath"
+          #local append=$(cat $fname)
+          sudo sed -i'.au.bak' -e "\\|$REFERENCE|$sedcmd $fname" "$fpath"
         else #Ref string unmatched; go with the fallback directive
           case $FALLBACK in
             prepend)
-              if [ -z "$(cat $fpath)" ]; then echo "$append" > "$fpath" #File empty; simply output to it
+              if [ -z "$(cat $fpath)" ]; then cat "$fname" > "$fpath" #File empty; simply output to it
               else
-                sudo sed -i'.au.bak' -e "\\|.*|i $append" "$fpath" #| as delimiter because $append often contains /
+                sudo sed -i'.au.bak' -e "1e cat $fname" "$fpath" #| as delimiter because $append often contains /
               fi
               ;;
             append)
-              if [ -z "$(cat $fpath)" ]; then echo "$append" > "$fpath" #File empty; simply output to it
-              else
-                sudo sed -i'.au.bak' -e "\\|.*|i $append" "$fpath" #| as delimiter because $append often contains /
-              fi
+              sudo cp "$fpath" "$fpath.au.bak"
+              echo "$append" >> "$fpath"
               ;;
             overwrite)
               sudo cp "$fpath" "$fpath.au.bak"
