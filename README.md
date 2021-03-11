@@ -1,7 +1,25 @@
 # Alsa-USB
 _Effortless USB audio support for Retropie + EmulationStation_
 
-`Install script is WIP`
+Installation
+---
+Download the install script by running:
+```
+wget -N https://raw.githubusercontent.com/SaberMage/Alsa-USB/main/install.sh && chmod +x install.sh && bash install.sh
+```
+1. The terminal will clear and show a number of messages as installation proceeds
+2. At the end of installation, you will be prompted to press a key. Your device will then reboot
+3. Alsa-USB is ready to roll!
+
+After installing:
+---
+- **Default behavior:** USB audio is enabled when connected, onboard audio is enabled when USB disconnects
+- Changes to audio output only occur **outside of gameplay**
+- `Behavior`, `USB volume`, and `audio device` can all be modified from the **Alsa-USB** menu, now found under `EmulationStation Home`->`Configs`
+
+**Note**: **Alsa-USB** is compatible with Naprosnia's [RetroPie BGM Player](https://github.com/Naprosnia/RetroPie_BGM_Player)
+
+---
 
 Manual Installation
 ---
@@ -20,12 +38,4 @@ Manual Installation
 5. Run `cd ~ && sudo rm -rf ./au-install` to cleanup the install files
 6. Reboot the device
 
-After installing:
----
-- **Default behavior:** USB audio is enabled when connected, onboard audio is enabled when USB disconnects
-- Changes to audio output only occur **outside of gameplay**
-- `Behavior`, `USB volume`, and `audio device` can all be modified from the **Alsa-USB** menu, now found under `EmulationStation Home`->`Configs`
-
-**Note**: **Alsa-USB** is compatible with Naprosnia's [RetroPie BGM Player](https://github.com/Naprosnia/RetroPie_BGM_Player)
-
-_An automated install script + menu screenshots are in the works!_
+_Menu screenshots are in the works!_
