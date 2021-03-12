@@ -1,0 +1,30 @@
+[Unit]
+Description=Alsa-USB Auto-Switch Daemon
+Documentation=https://github.com/SaberMage/Alsa-USB
+## Ensure dependencies in place
+Wants=local-fs.target
+After=console-setup.service
+
+
+#Wants=alsa-restore.service alsa-state.service
+ConditionPathIsDirectory=/opt/alsa-usb
+ConditionPathExists=/opt/alsa-usb/cur-scard.sh
+
+[Service]
+## use 'Type=forking' if the service backgrounds itself
+## other values are Type=simple (default) and Type=oneshot
+Type=simple
+## here we can set custom environment variables
+#Environment=AUTOSSH_GATETIME=0
+ExecStart=+/opt/alsa-usb/alsa-usb-mgr.sh
+ExecStop=+/usr/bin/pkill -f alsa-usb-mgr
+# don't use 'nobody' if your script needs to access user files
+# (if User is not set the service will run as root)
+#User=nobody
+
+# Useful during debugging; remove it once the service is working
+StandardOutput=console
+
+## Ensure this starts up at boot
+[Install]
+WantedBy=sysinit.target

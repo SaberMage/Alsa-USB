@@ -36,6 +36,7 @@ MENU="/home/pi/Alsa-USB"
 OPS="/opt/alsa-usb"
 SYS="/etc/modprobe.d"
 USB="/etc/udev/rules.d"
+SVC="/etc/systemd/system"
 ZS_CFGG="/etc"
 ZS_CFGU="/home/pi"
 ZA_BOOT="/etc"
@@ -219,6 +220,11 @@ function installfolder() {
 }
 #Iterate over folders in ./nexus, perform the proper installation(s) for each
 for dir in "${NEXUSDIRS[@]}"; do installfolder $dir; echo i++ &> /dev/null; done
+
+echo -e "\n ${NC}${LRED}--${NC}${WHITE} Enabling new system services...${NC}"
+sleep $SLEEPTIME
+sudo systemctl enable alsa-usb
+sudo systemctl enable alsa-usb-init
 
 echo -e "\n ${LRED}[${NC}${LGREEN} Installation Finished ${NC}${LRED}]${NC}\n"
 sleep $SLEEPTIME

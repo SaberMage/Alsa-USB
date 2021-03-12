@@ -1,7 +1,7 @@
 #!/bin/bash 
 #####################################################################
 #Project		:	Alsa-USB
-#Git			:	https://github.com/SaberMage/Alsa-USB
+#Git			:	https://github.com/
 #####################################################################
 #Script Name	:	au-menu-top.sh
 #Date			:	20210306	(YYYYMMDD)
@@ -63,7 +63,7 @@ function main_menu() {
 			sudo pkill -f emulationstatio
 			printf "\n\n*** Applying any audio output changes... ***\n\n"
 			sleep 1.5 #Starting up ES too soon results in ENDLESS ERRORS
-			sudo sh -c 'openvt -fc 1 emulationstation - pi' #Make sure ES runs in TTY1
+			sudo openvt -fc 1 emulationstation - pi #Make sure ES runs in TTY1
 			exit
 		fi
 		

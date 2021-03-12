@@ -1,7 +1,7 @@
 #!/bin/bash 
 #####################################################################
 #Project		:	Alsa-USB
-#Git			:	https://github.com/SaberMage/Alsa-USB
+#Git			:	https://github.com/
 #####################################################################
 #Script Name	:	au-m3.sh
 #Date			:	20210307	(YYYYMMDD)
@@ -51,10 +51,12 @@ function main_menu() {
 		#Toggle existence of auto-switch.disable
 		if [ -f $AUTO_DISABLE ]; then
 			sudo rm $AUTO_DISABLE
-			sudo $OPS/alsa-usb-mgr.sh &> /dev/null &
+			sudo systemctl start alsa-usb
+			#sudo $OPS/alsa-usb-mgr.sh &> /dev/null &
 		else
 			sudo touch $AUTO_DISABLE
-			sudo pkill -f alsa-usb-mgr
+			sudo systemctl stop alsa-usb
+			#sudo pkill -f alsa-usb-mgr
 		fi
 		
 		

@@ -1,7 +1,7 @@
 #!/bin/bash 
 #####################################################################
 #Project		:	Alsa-USB
-#Git			:	https://github.com/SaberMage/Alsa-USB
+#Git			:	https://github.com/
 #####################################################################
 #Script Name	:	au-m1.sh
 #Date			:	20210306	(YYYYMMDD)
