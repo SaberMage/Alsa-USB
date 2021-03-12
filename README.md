@@ -26,6 +26,13 @@ After installing:
 
 ---
 
+Known Issues / Limitations
+---
+- Processes, apps and games must all be restarted in order to switch to/from USB audio. There is no known or anticipated fix for this
+- Because of this, audio device swaps **will not** occur or trigger any process restarts during gameplay. You must exit to the EmulationStation menu or restart the device for changes to take effect
+- Alsa-USB was tested on a 4GB Raspberry Pi 4B housed in a PiBoy DMG. Two different USB audio devices have been tested thoroughly over the course of development
+- If you have a USB audio device that doesn't jive with Alsa-USB, please let me know! I will do my best to add support for it, if I can.
+
 Manual Installation
 ---
 - All files you need are in each directory under `/nexus`
