@@ -1,11 +1,11 @@
 #!/bin/bash
 #####################################################################
 #Project        : Alsa-USB
-#Version        : 1.0
+#Version        : 1.2.0
 #Git            : https://github.com/SaberMage/Alsa-USB
 #####################################################################
 #Script Name  : install.sh
-#Date          : 20210310	(YYYYMMDD)
+#Date          : 20210311	(YYYYMMDD)
 #Description  : The installation script. Heavily customized from Naprosnia's (barring style)
 #Usage        : wget -N https://raw.githubusercontent.com/SaberMage/Alsa-USB/main/install.sh
 #              : chmod +x install.sh
